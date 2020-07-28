@@ -19,6 +19,7 @@ import net.dries007.tfc.objects.te.TEBloomery;
 import net.dries007.tfc.objects.te.TECharcoalForge;
 import net.dries007.tfc.objects.te.TEFirePit;
 import net.dries007.tfc.objects.te.TELamp;
+import net.dries007.tfc.util.calendar.CalendarWorldData;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;

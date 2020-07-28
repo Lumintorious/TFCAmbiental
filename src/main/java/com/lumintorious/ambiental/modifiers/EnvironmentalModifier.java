@@ -15,11 +15,14 @@ import net.dries007.tfc.api.capability.food.Nutrient;
 import net.dries007.tfc.api.capability.player.CapabilityPlayerData;
 import net.dries007.tfc.api.capability.player.IPlayerData;
 import net.dries007.tfc.objects.fluids.FluidsTFC;
+import net.dries007.tfc.util.calendar.CalendarEventHandler;
 import net.dries007.tfc.util.calendar.CalendarTFC;
+import net.dries007.tfc.util.calendar.CalendarWorldData;
 import net.dries007.tfc.util.climate.ClimateCache;
 import net.dries007.tfc.util.climate.ClimateData;
 import net.dries007.tfc.util.climate.ClimateHelper;
 import net.dries007.tfc.util.climate.ClimateTFC;
+import net.dries007.tfc.world.classic.WorldTypeTFC;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -36,14 +39,16 @@ public class EnvironmentalModifier extends BaseModifier {
 	}
 	
 	public static float getEnvironmentTemperature(EntityPlayer player) {
-		float avg = ClimateData.DEFAULT.getRegionalTemp();
+		float avg = ClimateData.DEFAULT.getRegionalTemp() + 2.5f;
 		float incr = 0f;
 		float actual = ClimateTFC.getActualTemp(player.world, player.getPosition());
 		if(TFCAmbientalConfig.GENERAL.harsherTemperateAreas) {
 			float diff = actual - TemperatureSystem.AVERAGE;
+			float sign = Math.signum(diff);
 			float generalDiff = Math.abs(avg - TemperatureSystem.AVERAGE);
-			float multiplier = 1 + Math.max(0, 1 - generalDiff / 30) * 0.3f;
-			actual = TemperatureSystem.AVERAGE + diff * multiplier;
+			float mult0 = Math.max(0f, TFCAmbientalConfig.GENERAL.harsherMultiplier - 1f);
+			float multiplier = 1 + Math.max(0, 1 - generalDiff / 40) * mult0;
+			actual = TemperatureSystem.AVERAGE + (diff + 3f * sign) * multiplier;
 		}
 		return actual;
 	}

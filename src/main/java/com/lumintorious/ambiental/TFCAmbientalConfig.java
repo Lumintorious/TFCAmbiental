@@ -72,7 +72,7 @@ public class TFCAmbientalConfig {
 		    	
 		    	@Config.Comment("If harsherTemperateAreas is true, environmental temperatures going away from the average are multiplied by this number. (The less temperate an area is, the less the modifier affects it) ")
 	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.harsherMultiplier")
-	         	public float harsherMultiplier = 1.25f;
+	         	public float harsherMultiplier = 1.35f;
 		    }
 
 }

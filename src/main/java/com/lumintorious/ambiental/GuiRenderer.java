@@ -186,10 +186,10 @@ public class GuiRenderer {
         float opacity = 1f;
         if(temperature > TemperatureSystem.HOT_THRESHOLD) {
         	vignetteLocation = HOT_VIGNETTE;
-        	opacity = Math.min(0.85f ,(temperature - TemperatureSystem.HOT_THRESHOLD) / 15);
+        	opacity = Math.min(0.80f ,(temperature - TemperatureSystem.HOT_THRESHOLD) / 10);
         }else if(temperature < TemperatureSystem.COOL_THRESHOLD) {
         	vignetteLocation = COLD_VIGNETTE;
-        	opacity = Math.min(0.85f ,(TemperatureSystem.COOL_THRESHOLD - temperature) / 15);
+        	opacity = Math.min(0.80f ,(TemperatureSystem.COOL_THRESHOLD - temperature) / 10);
         }
 
         if (event.getType() == ElementType.PORTAL)

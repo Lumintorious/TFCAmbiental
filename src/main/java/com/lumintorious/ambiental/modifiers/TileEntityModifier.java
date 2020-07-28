@@ -1,5 +1,7 @@
 package com.lumintorious.ambiental.modifiers;
 
+import com.lumintorious.ambiental.capability.TemperatureSystem;
+
 import net.dries007.tfc.objects.te.TEBloomery;
 import net.dries007.tfc.objects.te.TECharcoalForge;
 import net.dries007.tfc.objects.te.TEFirePit;
@@ -60,11 +62,12 @@ public class TileEntityModifier extends BlockModifier{
 	public static TileEntityModifier handleLamps(TileEntity tile, EntityPlayer player) {
 		if(tile instanceof TELamp) {
 			TELamp lamp = (TELamp)tile;
-			float change = (lamp.isPowered() && lamp.getFuel() > 0) ? 2f : 0f;
-			float potency = 0f;
-			return new TileEntityModifier("lamp", change, potency);
-		}else {
-			return null;
+			if(EnvironmentalModifier.getEnvironmentTemperature(player) < TemperatureSystem.AVERAGE) {
+				float change = (lamp.isPowered() && lamp.getFuel() > 0) ? 2f : 0f;
+				float potency = 0f;
+				return new TileEntityModifier("lamp", change, potency, false);
+			}
 		}
+		return null;
 	}
 }

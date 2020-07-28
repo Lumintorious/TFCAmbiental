@@ -35,7 +35,7 @@ public class ItemModifier extends BaseModifier{
 				float temp = heat.getTemperature() / 500;
 				float change = temp;
 				float potency = 0f;
-				modifiers.add(new ItemModifier(stack.getDisplayName(), change, potency * stack.getCount()));
+				modifiers.add(new ItemModifier("heat_item", change, potency * stack.getCount()));
 			}
 			if(stack.getItem() instanceof IItemTemperatureOwner) {
 				IItemTemperatureOwner owner = (IItemTemperatureOwner)stack.getItem();
