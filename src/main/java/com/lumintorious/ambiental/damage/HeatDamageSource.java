@@ -1,5 +1,7 @@
 package com.lumintorious.ambiental.damage;
 
+import com.lumintorious.ambiental.Util;
+
 import net.dries007.tfc.util.DamageSourcesTFC;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,7 +19,7 @@ public class HeatDamageSource extends DamageSource{
 	@Override
 	public ITextComponent getDeathMessage(EntityLivingBase entityLivingBaseIn) {
 		if(entityLivingBaseIn.getName() != null) {
-			return new TextComponentString(entityLivingBaseIn.getName() + I18n.format("tfcambiental.hyperthermia"));
+			return new TextComponentString(entityLivingBaseIn.getName() + Util.translate("tfcambiental.hyperthermia"));
 		}else {
 			return null;
 		}

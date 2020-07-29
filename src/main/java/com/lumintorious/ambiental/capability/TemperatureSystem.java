@@ -132,13 +132,13 @@ public class TemperatureSystem implements ITemperatureSystem{
 				if(TFCAmbientalConfig.GENERAL.takeDamage) {
 					if(this.getTemperature() > BURN_THRESHOLD) {
 						if(this.getTemperature() > BURN_THRESHOLD + 3) {
-							player.attackEntityFrom(HeatDamageSource.INSTANCE, 5f);
+							player.attackEntityFrom(HeatDamageSource.INSTANCE, 4f);
 						}else {
 							player.attackEntityFrom(HeatDamageSource.INSTANCE,  2f);
 						}
 					}else if (this.getTemperature() < FREEZE_THRESHOLD){
 						if(this.getTemperature() < FREEZE_THRESHOLD - 3) {
-							player.attackEntityFrom(ColdDamageSource.INSTANCE, 5f);
+							player.attackEntityFrom(ColdDamageSource.INSTANCE, 4f);
 						}else {
 							player.attackEntityFrom(ColdDamageSource.INSTANCE, 2f);
 						}

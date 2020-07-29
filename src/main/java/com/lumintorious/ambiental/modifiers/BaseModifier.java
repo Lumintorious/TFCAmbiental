@@ -7,6 +7,7 @@ import java.util.TreeSet;
 
 import com.lumintorious.ambiental.TFCAmbiental;
 import com.lumintorious.ambiental.TFCAmbientalConfig;
+import com.lumintorious.ambiental.Util;
 import com.lumintorious.ambiental.capability.TemperatureSystem;
 
 import net.minecraft.client.resources.I18n;
@@ -79,7 +80,7 @@ public class BaseModifier {
 	}
 	
 	public String getDisplayName() {
-		return I18n.format(TFCAmbiental.MODID + ".modifier." + this.unlocalizedName);
+		return Util.translate(TFCAmbiental.MODID + ".modifier." + this.unlocalizedName);
 	}
 	
 	public void apply(TemperatureSystem temp) {

@@ -100,7 +100,7 @@ public class TFCAmbientalConfig {
 		    	
 		    	@Config.Comment("The temperature at which you start burning and taking damage. It's advisable to not change this by a lot since the entire ecosystem revolves around this.")
 	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.burningTemperature")
-	         	public float burningTemperature = 5f;
+	         	public float burningTemperature = 25f;
 		    	
 		    	@Config.Comment("The temperature at which you start freezing and taking damage. It's advisable to not change this by a lot since the entire ecosystem revolves around this.")
 	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.freezingTemperature")

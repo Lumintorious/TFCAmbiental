@@ -35,7 +35,7 @@ public class TFCAmbiental
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-    	if (event.getSide() == Side.CLIENT)
+    	if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
         {
     		MinecraftForge.EVENT_BUS.register(new GuiRenderer());
         }

@@ -1,5 +1,7 @@
 package com.lumintorious.ambiental.damage;
 
+import com.lumintorious.ambiental.Util;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
@@ -16,7 +18,7 @@ public class ColdDamageSource extends DamageSource{
 	@Override
 	public ITextComponent getDeathMessage(EntityLivingBase entityLivingBaseIn) {
 		if(entityLivingBaseIn.getName() != null) {
-			return new TextComponentString(entityLivingBaseIn.getName() + I18n.format("tfcambiental.hypothermia"));
+			return new TextComponentString(entityLivingBaseIn.getName() + Util.translate("tfcambiental.hypothermia"));
 		}else {
 			return null;
 		}
