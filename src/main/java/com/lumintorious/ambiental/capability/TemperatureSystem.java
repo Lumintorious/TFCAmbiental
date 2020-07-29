@@ -127,20 +127,20 @@ public class TemperatureSystem implements ITemperatureSystem{
 			return;
 		}else {
 			tick = 0;
-			if(damageTick == 6) {
+			if(damageTick == 8) {
 				damageTick = 0;
 				if(TFCAmbientalConfig.GENERAL.takeDamage) {
 					if(this.getTemperature() > BURN_THRESHOLD) {
 						if(this.getTemperature() > BURN_THRESHOLD + 3) {
 							player.attackEntityFrom(HeatDamageSource.INSTANCE, 5f);
 						}else {
-							player.attackEntityFrom(HeatDamageSource.INSTANCE,  1f);
+							player.attackEntityFrom(HeatDamageSource.INSTANCE,  2f);
 						}
 					}else if (this.getTemperature() < FREEZE_THRESHOLD){
 						if(this.getTemperature() < FREEZE_THRESHOLD - 3) {
 							player.attackEntityFrom(ColdDamageSource.INSTANCE, 5f);
 						}else {
-							player.attackEntityFrom(ColdDamageSource.INSTANCE, 1f);
+							player.attackEntityFrom(ColdDamageSource.INSTANCE, 2f);
 						}
 					}
 				}
@@ -148,7 +148,7 @@ public class TemperatureSystem implements ITemperatureSystem{
 					if(player.getFoodStats() instanceof FoodStatsTFC) {
 						FoodStatsTFC stats = (FoodStatsTFC)player.getFoodStats();
 						if(this.getTemperature() > (HOT_THRESHOLD + BURN_THRESHOLD) / 2) {
-							stats.setThirst(stats.getThirst() - 5);
+							stats.setThirst(stats.getThirst() - 10);
 						}else if (this.getTargetTemperature() < (COOL_THRESHOLD + FREEZE_THRESHOLD) / 2){
 							stats.setFoodLevel(stats.getFoodLevel() - 1);
 						}
