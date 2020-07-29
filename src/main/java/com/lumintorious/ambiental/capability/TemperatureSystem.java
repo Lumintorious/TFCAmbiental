@@ -18,6 +18,7 @@ import com.lumintorious.ambiental.modifiers.ItemModifier;
 import com.lumintorious.ambiental.modifiers.ModifierStorage;
 
 import net.dries007.tfc.TerraFirmaCraft;
+import net.dries007.tfc.api.capability.food.FoodStatsTFC;
 import net.dries007.tfc.objects.items.ItemsTFC;
 import net.dries007.tfc.util.DamageSourcesTFC;
 import net.dries007.tfc.util.calendar.CalendarTFC;
@@ -40,11 +41,11 @@ public class TemperatureSystem implements ITemperatureSystem{
 	public static final BaseModifier CORE_TEMPERATURE = new BaseModifier("core", 0f, 0.0f);
 	public boolean isRising;
 	
-	public static float AVERAGE = 15;
-	public static float HOT_THRESHOLD = 20;
-	public static float COOL_THRESHOLD = 10;
-	public static float BURN_THRESHOLD = 25;
-	public static float FREEZE_THRESHOLD = 5;
+	public static float AVERAGE = TFCAmbientalConfig.GENERAL.averageTemperature;
+	public static float HOT_THRESHOLD = TFCAmbientalConfig.GENERAL.hotTemperature;
+	public static float COOL_THRESHOLD = TFCAmbientalConfig.GENERAL.coldTemperature;
+	public static float BURN_THRESHOLD = TFCAmbientalConfig.GENERAL.burningTemperature;
+	public static float FREEZE_THRESHOLD = TFCAmbientalConfig.GENERAL.freezingTemperature;
 	
 	public ModifierStorage modifiers = new ModifierStorage();
 	
@@ -126,21 +127,35 @@ public class TemperatureSystem implements ITemperatureSystem{
 			return;
 		}else {
 			tick = 0;
-			if(damageTick == 4) {
+			if(damageTick == 6) {
 				damageTick = 0;
-				if(this.getTemperature() > BURN_THRESHOLD) {
-					if(this.getTemperature() > BURN_THRESHOLD + 3) {
-						player.attackEntityFrom(HeatDamageSource.INSTANCE, 3f);
-					}else {
-						player.attackEntityFrom(HeatDamageSource.INSTANCE,  1f);
-					}
-				}else if (this.getTemperature() < FREEZE_THRESHOLD){
-					if(this.getTemperature() < FREEZE_THRESHOLD - 3) {
-						player.attackEntityFrom(ColdDamageSource.INSTANCE, 3f);
-					}else {
-						player.attackEntityFrom(ColdDamageSource.INSTANCE, 1f);
+				if(TFCAmbientalConfig.GENERAL.takeDamage) {
+					if(this.getTemperature() > BURN_THRESHOLD) {
+						if(this.getTemperature() > BURN_THRESHOLD + 3) {
+							player.attackEntityFrom(HeatDamageSource.INSTANCE, 5f);
+						}else {
+							player.attackEntityFrom(HeatDamageSource.INSTANCE,  1f);
+						}
+					}else if (this.getTemperature() < FREEZE_THRESHOLD){
+						if(this.getTemperature() < FREEZE_THRESHOLD - 3) {
+							player.attackEntityFrom(ColdDamageSource.INSTANCE, 5f);
+						}else {
+							player.attackEntityFrom(ColdDamageSource.INSTANCE, 1f);
+						}
 					}
 				}
+				if(TFCAmbientalConfig.GENERAL.loseHungerThirst) {
+					if(player.getFoodStats() instanceof FoodStatsTFC) {
+						FoodStatsTFC stats = (FoodStatsTFC)player.getFoodStats();
+						if(this.getTemperature() > (HOT_THRESHOLD + BURN_THRESHOLD) / 2) {
+							stats.setThirst(stats.getThirst() - 5);
+						}else if (this.getTargetTemperature() < (COOL_THRESHOLD + FREEZE_THRESHOLD) / 2){
+							stats.setFoodLevel(stats.getFoodLevel() - 1);
+						}
+					}
+					
+				}
+				
 			}else {
 				damageTick++;
 			}

@@ -27,7 +27,11 @@ public class TFCAmbientalConfig {
 		        if (event.getModID().equals(TFCAmbiental.MODID))
 		        {
 		            ConfigManager.sync(TFCAmbiental.MODID, Config.Type.INSTANCE);
-		            
+		            TemperatureSystem.AVERAGE = TFCAmbientalConfig.GENERAL.averageTemperature;
+		            TemperatureSystem.HOT_THRESHOLD = TFCAmbientalConfig.GENERAL.hotTemperature;
+		            TemperatureSystem.COOL_THRESHOLD = TFCAmbientalConfig.GENERAL.coldTemperature;
+		            TemperatureSystem.BURN_THRESHOLD = TFCAmbientalConfig.GENERAL.burningTemperature;
+		            TemperatureSystem.FREEZE_THRESHOLD = TFCAmbientalConfig.GENERAL.freezingTemperature;
 		        }
 		    }
 
@@ -62,6 +66,14 @@ public class TFCAmbientalConfig {
 	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.diminishedModifierMultiplier")
 	         	public float diminishedModifierMultiplier = 0.7f;
 		    	
+		    	@Config.Comment("If true, you will start taking damage when below freezing or above burning temperatures.")
+	    	 	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.takeDamage")
+	    	 	public boolean takeDamage = true;
+		    	
+		    	@Config.Comment("If true, you will start losing hunger when below cold temperatures and losing thirst when above hot temperatures.")
+	    	 	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.takeDamage")
+	    	 	public boolean loseHungerThirst = true;
+		    	
 		    	@Config.Comment("How many modifiers of the same type until they stop adding together")
 	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.modifierCap")
 	         	public int modifierCap = 4;
@@ -73,6 +85,26 @@ public class TFCAmbientalConfig {
 		    	@Config.Comment("If harsherTemperateAreas is true, environmental temperatures going away from the average are multiplied by this number. (The less temperate an area is, the less the modifier affects it) ")
 	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.harsherMultiplier")
 	         	public float harsherMultiplier = 1.35f;
+		    	
+		    	@Config.Comment("The temperature at which you are at equilibrium. It's advisable to not change this by a lot since the entire ecosystem revolves around this.")
+	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.averageTemperature")
+	         	public float averageTemperature = 15f;
+		    	
+		    	@Config.Comment("The temperature at which your screen starts heating. It's advisable to not change this by a lot since the entire ecosystem revolves around this.")
+	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.hotTemperature")
+	         	public float hotTemperature = 20f;
+		    	
+		    	@Config.Comment("The temperature at which your screen starts freezing. It's advisable to not change this by a lot since the entire ecosystem revolves around this.")
+	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.coldTemperature")
+	         	public float coldTemperature = 10f;
+		    	
+		    	@Config.Comment("The temperature at which you start burning and taking damage. It's advisable to not change this by a lot since the entire ecosystem revolves around this.")
+	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.burningTemperature")
+	         	public float burningTemperature = 5f;
+		    	
+		    	@Config.Comment("The temperature at which you start freezing and taking damage. It's advisable to not change this by a lot since the entire ecosystem revolves around this.")
+	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".general.freezingTemperature")
+	         	public float freezingTemperature = 5f;
 		    }
 
 }

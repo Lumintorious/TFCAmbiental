@@ -110,7 +110,7 @@ public class EnvironmentalModifier extends BaseModifier {
 		light = Math.max(12, light);
 		float temp = getEnvironmentTemperature(player);
 		float avg = TemperatureSystem.AVERAGE;
-		float coverage = (1f - (float)light/15f) + 0.55f;
+		float coverage = (1f - (float)light/15f) + 0.5f;
 		if(light < 15 && temp > avg) {
 			return new EnvironmentalModifier("shade", -Math.abs(avg - temp) * coverage, 0f);
 		}else{
@@ -120,12 +120,12 @@ public class EnvironmentalModifier extends BaseModifier {
 	
 	public static EnvironmentalModifier handleCozy(EntityPlayer player) {
 		int skyLight = getSkylight(player);
-		skyLight = Math.max(10, skyLight);
+		skyLight = Math.max(11, skyLight);
 		int blockLight = getBlockLight(player);
 		float temp = getEnvironmentTemperature(player);
 		float avg = TemperatureSystem.AVERAGE;
-		float coverage = (1f - (float)skyLight/15f) + 0.35f;
-		if(skyLight < 13 && blockLight > 1 && temp < avg - 2) {
+		float coverage = (1f - (float)skyLight/15f) + 0.4f;
+		if(skyLight < 14 && blockLight > 1 && temp < avg - 2) {
 			return new EnvironmentalModifier("cozy", Math.abs(avg - 2 - temp) *  coverage, 0f);
 		}else{
 			return null;

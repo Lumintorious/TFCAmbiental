@@ -6,11 +6,13 @@ import com.lumintorious.ambiental.capability.TemperatureSystem;
 
 import net.dries007.tfc.TerraFirmaCraft;
 import net.dries007.tfc.api.capability.DumbStorage;
+import net.dries007.tfc.proxy.IProxy;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -26,12 +28,17 @@ public class TFCAmbiental
     
     @Mod.Instance
     public static TFCAmbiental INSTANCE;
-    
-    public final SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
+    @SidedProxy(modId = MODID, clientSide = "net.dries007.tfc.proxy.ClientProxy", serverSide = "net.dries007.tfc.proxy.ServerProxy")
+    private static IProxy PROXY = null;
+    
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+    	if (event.getSide() == Side.CLIENT)
+        {
+    		MinecraftForge.EVENT_BUS.register(new GuiRenderer());
+        }
     	CapabilityManager.INSTANCE.register(ITemperatureSystem.class, new DumbStorage(), () -> null);
     	
     	
@@ -43,11 +50,6 @@ public class TFCAmbiental
     {
     	MinecraftForge.EVENT_BUS.register(new PlayerTemperatureHandler());
     	
-    	
-    	if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-    		MinecraftForge.EVENT_BUS.register(new GuiRenderer());
-        }
     }
     
 }
