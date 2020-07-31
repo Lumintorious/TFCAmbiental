@@ -1,28 +1,16 @@
 package com.lumintorious.ambiental.modifiers;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.lumintorious.ambiental.TFCAmbiental;
 import com.lumintorious.ambiental.TFCAmbientalConfig;
 import com.lumintorious.ambiental.api.IEnvironmentalTemperatureProvider;
 import com.lumintorious.ambiental.api.TemperatureRegistry;
-import com.lumintorious.ambiental.capability.TemperatureSystem;
+import com.lumintorious.ambiental.capability.TemperatureCapability;
 
-import net.dries007.tfc.api.capability.food.CapabilityFood;
 import net.dries007.tfc.api.capability.food.IFoodStatsTFC;
 import net.dries007.tfc.api.capability.food.Nutrient;
-import net.dries007.tfc.api.capability.player.CapabilityPlayerData;
-import net.dries007.tfc.api.capability.player.IPlayerData;
 import net.dries007.tfc.objects.fluids.FluidsTFC;
-import net.dries007.tfc.util.calendar.CalendarEventHandler;
 import net.dries007.tfc.util.calendar.CalendarTFC;
-import net.dries007.tfc.util.calendar.CalendarWorldData;
-import net.dries007.tfc.util.climate.ClimateCache;
 import net.dries007.tfc.util.climate.ClimateData;
-import net.dries007.tfc.util.climate.ClimateHelper;
 import net.dries007.tfc.util.climate.ClimateTFC;
-import net.dries007.tfc.world.classic.WorldTypeTFC;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -39,16 +27,16 @@ public class EnvironmentalModifier extends BaseModifier {
 	}
 	
 	public static float getEnvironmentTemperature(EntityPlayer player) {
-		float avg = ClimateData.DEFAULT.getRegionalTemp() + 2.5f;
+		float avg = ClimateData.DEFAULT.getRegionalTemp() + 2f;
 		float incr = 0f;
 		float actual = ClimateTFC.getActualTemp(player.world, player.getPosition());
 		if(TFCAmbientalConfig.GENERAL.harsherTemperateAreas) {
-			float diff = actual - TemperatureSystem.AVERAGE;
+			float diff = actual - TemperatureCapability.AVERAGE;
 			float sign = Math.signum(diff);
-			float generalDiff = Math.abs(avg - TemperatureSystem.AVERAGE);
+			float generalDiff = Math.abs(avg - TemperatureCapability.AVERAGE);
 			float mult0 = Math.max(0f, TFCAmbientalConfig.GENERAL.harsherMultiplier - 1f);
-			float multiplier = 1 + Math.max(0, 1 - generalDiff / 40) * mult0;
-			actual = TemperatureSystem.AVERAGE + (diff + 3f * sign) * multiplier;
+			float multiplier = 1 + Math.max(0, 1 - generalDiff / 55) * mult0;
+			actual = TemperatureCapability.AVERAGE + (diff + 1.5f * sign) * multiplier;
 		}
 		return actual;
 	}
@@ -58,7 +46,7 @@ public class EnvironmentalModifier extends BaseModifier {
 	}
 	
 	public static EnvironmentalModifier handleFire(EntityPlayer player) {
-		return player.isBurning() ? new EnvironmentalModifier("on_fire", 5f, 5f) : null;
+		return player.isBurning() ? new EnvironmentalModifier("on_fire", 4f, 4f) : null;
 	}
 	
 	public static EnvironmentalModifier handleWater(EntityPlayer player) {
@@ -66,11 +54,11 @@ public class EnvironmentalModifier extends BaseModifier {
 			BlockPos pos = player.getPosition();
 			IBlockState state = player.world.getBlockState(pos);
 			if(state.getBlock() == FluidsTFC.HOT_WATER.get().getBlock()) {
-				return new EnvironmentalModifier("in_hot_water", 6f, 8f);
+				return new EnvironmentalModifier("in_hot_water", 5f, 6f);
 			}else if(state.getBlock() == Blocks.LAVA) {
-				return new EnvironmentalModifier("in_lava", 16f, 10f);
+				return new EnvironmentalModifier("in_lava", 10f, 5f);
 			}else {
-				return new EnvironmentalModifier("in_water", -8f, 8f);
+				return new EnvironmentalModifier("in_water", -5f, 6f);
 			}
 		}else {
 			return null;
@@ -109,8 +97,8 @@ public class EnvironmentalModifier extends BaseModifier {
 		int light = getSkylight(player);
 		light = Math.max(12, light);
 		float temp = getEnvironmentTemperature(player);
-		float avg = TemperatureSystem.AVERAGE;
-		float coverage = (1f - (float)light/15f) + 0.5f;
+		float avg = TemperatureCapability.AVERAGE;
+		float coverage = (1f - (float)light/15f) + 0.45f;
 		if(light < 15 && temp > avg) {
 			return new EnvironmentalModifier("shade", -Math.abs(avg - temp) * coverage, 0f);
 		}else{
@@ -123,9 +111,9 @@ public class EnvironmentalModifier extends BaseModifier {
 		skyLight = Math.max(11, skyLight);
 		int blockLight = getBlockLight(player);
 		float temp = getEnvironmentTemperature(player);
-		float avg = TemperatureSystem.AVERAGE;
-		float coverage = (1f - (float)skyLight/15f) + 0.4f;
-		if(skyLight < 14 && blockLight > 1 && temp < avg - 2) {
+		float avg = TemperatureCapability.AVERAGE;
+		float coverage = (1f - (float)skyLight/15f) + 0.33f;
+		if(skyLight < 14 && blockLight > 4 && temp < avg - 2) {
 			return new EnvironmentalModifier("cozy", Math.abs(avg - 2 - temp) *  coverage, 0f);
 		}else{
 			return null;
@@ -135,7 +123,7 @@ public class EnvironmentalModifier extends BaseModifier {
 	public static EnvironmentalModifier handleThirst(EntityPlayer player) {
 		if(player.getFoodStats() instanceof IFoodStatsTFC) {
 			IFoodStatsTFC stats = (IFoodStatsTFC) player.getFoodStats();
-			if(getEnvironmentTemperature(player) > TemperatureSystem.AVERAGE + 3 && stats.getThirst() > 80f) {
+			if(getEnvironmentTemperature(player) > TemperatureCapability.AVERAGE + 3 && stats.getThirst() > 80f) {
 				return new EnvironmentalModifier("well_hidrated", -2f, 0f);
 			}
 		}
@@ -143,7 +131,7 @@ public class EnvironmentalModifier extends BaseModifier {
 	}
 	
 	public static EnvironmentalModifier handleFood(EntityPlayer player) {
-		if(getEnvironmentTemperature(player) < TemperatureSystem.AVERAGE - 3 && player.getFoodStats().getFoodLevel() > 16) {
+		if(getEnvironmentTemperature(player) < TemperatureCapability.AVERAGE - 3 && player.getFoodStats().getFoodLevel() > 16) {
 			return new EnvironmentalModifier("well_fed", 2f, 0f);
 		}
 		return null;
@@ -152,15 +140,15 @@ public class EnvironmentalModifier extends BaseModifier {
 	public static EnvironmentalModifier handleDiet(EntityPlayer player) {
 		if(player.getFoodStats() instanceof IFoodStatsTFC) {
 			IFoodStatsTFC stats = (IFoodStatsTFC) player.getFoodStats();
-			if(getEnvironmentTemperature(player) < TemperatureSystem.AVERAGE - 7) {
+			if(getEnvironmentTemperature(player) < TemperatureCapability.COOL_THRESHOLD) {
 				float grainLevel = stats.getNutrition().getNutrient(Nutrient.GRAIN);
 				float meatLevel = stats.getNutrition().getNutrient(Nutrient.PROTEIN);
-				return new EnvironmentalModifier("nutrients", -4f * grainLevel * meatLevel, 0f);
+				return new EnvironmentalModifier("nutrients", 3f * grainLevel * meatLevel, 0f);
 			}
-			if(getEnvironmentTemperature(player) > TemperatureSystem.AVERAGE + 7) {
+			if(getEnvironmentTemperature(player) > TemperatureCapability.HOT_THRESHOLD) {
 				float fruitLevel = stats.getNutrition().getNutrient(Nutrient.FRUIT);
 				float veggieLevel = stats.getNutrition().getNutrient(Nutrient.VEGETABLES);
-				return new EnvironmentalModifier("nutrients", 4f  * fruitLevel * veggieLevel, 0f);
+				return new EnvironmentalModifier("nutrients", -3f  * fruitLevel * veggieLevel, 0f);
 			}
 		}
 		return null;

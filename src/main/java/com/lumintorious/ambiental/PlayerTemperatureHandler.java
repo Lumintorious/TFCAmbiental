@@ -1,34 +1,43 @@
 package com.lumintorious.ambiental;
 
-import com.ibm.icu.impl.CalendarData;
 import com.lumintorious.ambiental.capability.TemperatureCapability;
-import com.lumintorious.ambiental.capability.TemperatureSystem;
 
-import net.dries007.tfc.ConfigTFC;
-import net.dries007.tfc.ConfigTFC.General.MiscCFG;
-import net.dries007.tfc.objects.blocks.BlocksTFC;
-import net.dries007.tfc.objects.items.ItemTFC;
-import net.dries007.tfc.objects.items.ItemsTFC;
-import net.dries007.tfc.util.calendar.CalendarTFC;
-import net.dries007.tfc.util.calendar.CalendarWorldData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
-@Mod.EventBusSubscriber(modid = TFCAmbiental.MODID)
 public class PlayerTemperatureHandler {
+	
+	@SubscribeEvent
+	public void onPlayerDeath(LivingDeathEvent event) {
+		if(event.getEntityLiving().world.isRemote) {
+			return;
+		}
+		if(!(event.getEntityLiving() instanceof EntityPlayer)) {
+			return;
+		}
+		EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+	}
+	
+	@SubscribeEvent
+	public void onPlayerSpawn(LivingSpawnEvent event) {
+		if(event.getEntityLiving().world.isRemote) {
+			return;
+		}
+		if(!(event.getEntityLiving() instanceof EntityPlayer)) {
+			return;
+		}
+		EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+		player.sendMessage(new TextComponentString("respawned"));
+	}
 	
 	@SubscribeEvent
     public void onAttachEntityCapabilities(AttachCapabilitiesEvent<Entity> event)
@@ -47,9 +56,6 @@ public class PlayerTemperatureHandler {
 
 	@SubscribeEvent
 	public void onPlayerUpdate(LivingUpdateEvent  event) {
-		if(event.getEntity().world.isRemote) {
-			return;
-		}
 		if(!(event.getEntityLiving() instanceof EntityPlayer)) {
 			return;
 		}
@@ -58,9 +64,9 @@ public class PlayerTemperatureHandler {
 		if(player.isCreative()) {
 			return;
 		}
-		TemperatureSystem temp = TemperatureSystem.getTemperatureFor(player);
+		TemperatureCapability temp = (TemperatureCapability)player.getCapability(TemperatureCapability.CAPABILITY, null);
 		ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
-		if(stack != null) {
+		if(stack != null && !player.world.isRemote) {
 			if(stack.getItem().getRegistryName().toString().equals("tfc:wand")) {
 				temp.say(temp);
 			}

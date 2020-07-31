@@ -48,13 +48,14 @@ public class TemperatureRegistry<Type extends ITemperatureProvider> implements I
 		BLOCKS.register((state, pos, player) -> state.getBlock() == Blocks.FIRE ? new BlockModifier("fire", 3f, 3f) : null);
 		BLOCKS.register((state, pos, player) -> state.getBlock() == Blocks.LAVA ? new BlockModifier("lava", 3f, 3f) : null);
 		BLOCKS.register((state, pos, player) -> state.getBlock() == Blocks.FLOWING_LAVA ? new BlockModifier("lava", 3f, 3f) : null);
-		BLOCKS.register((state, pos, player) -> (state.getBlock() == Blocks.SNOW_LAYER && player.world.getLightFor(EnumSkyBlock.SKY, pos) == 15) ? new BlockModifier("snow", 1f, 0.2f, false) : null);
+		BLOCKS.register((state, pos, player) -> (state.getBlock() == Blocks.SNOW_LAYER && player.world.getLightFor(EnumSkyBlock.SKY, pos) == 15) ? new BlockModifier("snow", -1.5f, 0.2f, false) : null);
 		
 		ENVIRONMENT.register(EnvironmentalModifier::handleGeneralTemperature);
 		ENVIRONMENT.register(EnvironmentalModifier::handleShade);
 		ENVIRONMENT.register(EnvironmentalModifier::handleCozy);
 		ENVIRONMENT.register(EnvironmentalModifier::handleThirst);
 		ENVIRONMENT.register(EnvironmentalModifier::handleFood);
+		ENVIRONMENT.register(EnvironmentalModifier::handleDiet);
 		ENVIRONMENT.register(EnvironmentalModifier::handleFire);
 		ENVIRONMENT.register(EnvironmentalModifier::handleWater);
 		ENVIRONMENT.register(EnvironmentalModifier::handleRain);

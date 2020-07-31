@@ -1,5 +1,8 @@
 package com.lumintorious.ambiental;
 
+import java.util.logging.Logger;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,4 +19,5 @@ public abstract class Util {
 			return key;
 		}
 	}
+
 }

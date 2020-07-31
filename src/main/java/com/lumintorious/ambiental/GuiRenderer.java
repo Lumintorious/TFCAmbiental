@@ -2,16 +2,13 @@ package com.lumintorious.ambiental;
 
 import org.lwjgl.opengl.GL11;
 
+import com.lumintorious.ambiental.capability.ITemperatureCapability;
 import com.lumintorious.ambiental.capability.TemperatureCapability;
-import com.lumintorious.ambiental.capability.TemperatureSystem;
-import com.lumintorious.ambiental.capability.ITemperatureSystem;
 
 import net.dries007.tfc.objects.fluids.FluidsTFC;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -19,16 +16,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.BossInfo.Color;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -50,6 +41,12 @@ public class GuiRenderer {
     @SubscribeEvent
     public void render(RenderGameOverlayEvent.Pre event)
     {
+
+    	EntityPlayer player = Minecraft.getMinecraft().player;
+    	if(player.isCreative() || player.isDead || player.isSpectator()) {
+    		return;
+    	}
+    	TemperatureCapability tempSystem = (TemperatureCapability)player.getCapability(TemperatureCapability.CAPABILITY, null);
     	ScaledResolution resolution = event.getResolution();
         int width = resolution.getScaledWidth();
         int height = resolution.getScaledHeight();
@@ -57,10 +54,6 @@ public class GuiRenderer {
         float greenCol = 0f;
         float blueCol = 0f;
 
-        EntityPlayer player = Minecraft.getMinecraft().player;
-	      if(player.isCreative()) {
-	    	  return;
-	      }
         float offsetY = 0f;
         float offsetX = 0f;
         float offsetYArrow = 0f;
@@ -89,22 +82,17 @@ public class GuiRenderer {
 	      int healthRowHeight = sr.getScaledHeight() - 40;
 	      int armorRowHeight = healthRowHeight - 10;
 	      int mid = sr.getScaledWidth() / 2;
-
-	      TemperatureSystem tempSystem = (TemperatureSystem) player.getCapability(TemperatureCapability.CAPABILITY, null);
-	      if(tempSystem.isDead) {
-	    	  return;
-	      }
 	      temperature = tempSystem.getTemperature();
 	      GL11.glEnable(GL11.GL_BLEND);
-	      if(temperature > TemperatureSystem.AVERAGE) {
-		    float hotRange = TemperatureSystem.HOT_THRESHOLD - TemperatureSystem.AVERAGE + 2;
-	      	float red = Math.max(0, Math.min(1, (temperature - TemperatureSystem.AVERAGE) / hotRange));
+	      if(temperature > TemperatureCapability.AVERAGE) {
+		    float hotRange = TemperatureCapability.HOT_THRESHOLD - TemperatureCapability.AVERAGE + 2;
+	      	float red = Math.max(0, Math.min(1, (temperature - TemperatureCapability.AVERAGE) / hotRange));
 	          redCol = 1F;
 	          greenCol = 1.0F - red / 2.4F;
 	          blueCol = 1.0F - red / 1.6F;
 	      }else {
-	    	float coolRange = TemperatureSystem.AVERAGE - TemperatureSystem.COOL_THRESHOLD - 2;
-	      	float blue = Math.max(0, Math.min(1, (TemperatureSystem.AVERAGE - temperature) / coolRange));
+	    	float coolRange = TemperatureCapability.AVERAGE - TemperatureCapability.COOL_THRESHOLD - 2;
+	      	float blue = Math.max(0, Math.min(1, (TemperatureCapability.AVERAGE - temperature) / coolRange));
 	          redCol = 1.0F - blue / 1.6F;
 	          greenCol = 1.0F - blue / 2.4F;
 	          blueCol = 1.0F;
@@ -116,20 +104,20 @@ public class GuiRenderer {
 	      float speed = tempSystem.getChangeSpeed();
     	  float change = tempSystem.getChange();
 	      if(change > 0) {
-	    	  if(change > TemperatureSystem.HIGH_CHANGE) {
+	    	  if(change > TemperatureCapability.HIGH_CHANGE) {
 			      drawTexturedModalRect(mid - 8, armorRowHeight - 4 + offsetYArrow, 16, 16, PLUSER);
 	    	  }else {
 			      drawTexturedModalRect(mid - 8, armorRowHeight - 4 + offsetYArrow, 16, 16, PLUS);
 	    	  }
 	      }else {
-	    	  if(change < -TemperatureSystem.HIGH_CHANGE) {
+	    	  if(change < -TemperatureCapability.HIGH_CHANGE) {
 			      drawTexturedModalRect(mid - 8, armorRowHeight - 4 + offsetYArrow, 16, 16, MINUSER);
 	    	  }else {
 			      drawTexturedModalRect(mid - 8, armorRowHeight - 4 + offsetYArrow, 16, 16, MINUS);
 	    	  }
 	      }
-          if((player.isSneaking() || !TFCAmbientalConfig.CLIENT.sneakyDetails) && tempSystem instanceof TemperatureSystem) {
-	    	  TemperatureSystem sys = (TemperatureSystem)tempSystem;
+          if((player.isSneaking() || !TFCAmbientalConfig.CLIENT.sneakyDetails) && tempSystem instanceof TemperatureCapability) {
+        	  TemperatureCapability sys = (TemperatureCapability)tempSystem;
 	    	  float targetFormatted = sys.getTargetTemperature();
 	    	  float tempFormatted = sys.getTemperature();
 	    	  float changeFormatted = sys.getChange();
@@ -178,17 +166,17 @@ public class GuiRenderer {
     {
         ResourceLocation vignetteLocation = null;
         float temperature = 1f;
-        ITemperatureSystem tempSystem = (ITemperatureSystem) player.getCapability(TemperatureCapability.CAPABILITY, null);
+        ITemperatureCapability tempSystem = (ITemperatureCapability) player.getCapability(TemperatureCapability.CAPABILITY, null);
         temperature = tempSystem.getTemperature();
         
         
         float opacity = 1f;
-        if(temperature > TemperatureSystem.HOT_THRESHOLD) {
+        if(temperature > TemperatureCapability.HOT_THRESHOLD) {
         	vignetteLocation = HOT_VIGNETTE;
-        	opacity = Math.min(0.80f ,(temperature - TemperatureSystem.HOT_THRESHOLD) / 10);
-        }else if(temperature < TemperatureSystem.COOL_THRESHOLD) {
+        	opacity = Math.min(0.95f ,(temperature - TemperatureCapability.HOT_THRESHOLD) / 14);
+        }else if(temperature < TemperatureCapability.COOL_THRESHOLD) {
         	vignetteLocation = COLD_VIGNETTE;
-        	opacity = Math.min(0.80f ,(TemperatureSystem.COOL_THRESHOLD - temperature) / 10);
+        	opacity = Math.min(0.95f ,(TemperatureCapability.COOL_THRESHOLD - temperature) / 14);
         }
 
         if (event.getType() == ElementType.PORTAL)

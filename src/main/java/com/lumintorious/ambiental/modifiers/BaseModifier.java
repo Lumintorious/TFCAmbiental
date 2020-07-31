@@ -1,16 +1,9 @@
 package com.lumintorious.ambiental.modifiers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.lumintorious.ambiental.TFCAmbiental;
 import com.lumintorious.ambiental.TFCAmbientalConfig;
 import com.lumintorious.ambiental.Util;
-import com.lumintorious.ambiental.capability.TemperatureSystem;
-
-import net.minecraft.client.resources.I18n;
+import com.lumintorious.ambiental.capability.TemperatureCapability;
 
 public class BaseModifier {
 	private String unlocalizedName;
@@ -83,11 +76,11 @@ public class BaseModifier {
 		return Util.translate(TFCAmbiental.MODID + ".modifier." + this.unlocalizedName);
 	}
 	
-	public void apply(TemperatureSystem temp) {
+	public void apply(TemperatureCapability temp) {
 		// nothing;
 	}
 	
-	public void cancel(TemperatureSystem temp) {
+	public void cancel(TemperatureCapability temp) {
 		// nothing;
 	}
 }

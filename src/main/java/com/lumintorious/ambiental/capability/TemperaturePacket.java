@@ -45,10 +45,10 @@ public class TemperaturePacket implements IMessage{
                 EntityPlayer player = TerraFirmaCraft.getProxy().getPlayer(ctx);
                 if (player != null)
                 {
-                    ITemperatureSystem temp = TemperatureSystem.getTemperatureFor(player);
-                    if (temp != null)
+                    ITemperatureCapability sys = player.getCapability(TemperatureCapability.CAPABILITY, null);
+                    if (sys != null)
                     {
-                    	temp.deserializeNBT(message.tag);
+                    	sys.deserializeNBT(message.tag);
                     }
                 }
             });
