@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.biome.Biome;
 
 public class EnvironmentalModifier extends BaseModifier {
 
@@ -57,6 +58,8 @@ public class EnvironmentalModifier extends BaseModifier {
 				return new EnvironmentalModifier("in_hot_water", 5f, 6f);
 			}else if(state.getBlock() == Blocks.LAVA) {
 				return new EnvironmentalModifier("in_lava", 10f, 5f);
+			}else if(state.getBlock() == FluidsTFC.SALT_WATER.get().getBlock() && player.world.getBiome(pos).getTempCategory() == Biome.TempCategory.OCEAN ){
+				return new EnvironmentalModifier("in_ocean_water", -8f, 6f);
 			}else {
 				return new EnvironmentalModifier("in_water", -5f, 6f);
 			}
@@ -86,7 +89,7 @@ public class EnvironmentalModifier extends BaseModifier {
 	}
 	
 	public static EnvironmentalModifier handleUnderground(EntityPlayer player) {
-		if(player.world.getLight(player.getPosition()) < 1 && player.getPosition().getY() < 135) {
+		if(player.world.getLight(player.getPosition()) < 3 && player.getPosition().getY() < 135) {
 			return new EnvironmentalModifier("underground", -6f, 0.2f);
 		}else{
 			return null;
@@ -98,7 +101,7 @@ public class EnvironmentalModifier extends BaseModifier {
 		light = Math.max(12, light);
 		float temp = getEnvironmentTemperature(player);
 		float avg = TemperatureCapability.AVERAGE;
-		float coverage = (1f - (float)light/15f) + 0.45f;
+		float coverage = (1f - (float)light/15f) + 0.5f;
 		if(light < 15 && temp > avg) {
 			return new EnvironmentalModifier("shade", -Math.abs(avg - temp) * coverage, 0f);
 		}else{
@@ -112,7 +115,7 @@ public class EnvironmentalModifier extends BaseModifier {
 		int blockLight = getBlockLight(player);
 		float temp = getEnvironmentTemperature(player);
 		float avg = TemperatureCapability.AVERAGE;
-		float coverage = (1f - (float)skyLight/15f) + 0.33f;
+		float coverage = (1f - (float)skyLight/15f) + 0.4f;
 		if(skyLight < 14 && blockLight > 4 && temp < avg - 2) {
 			return new EnvironmentalModifier("cozy", Math.abs(avg - 2 - temp) *  coverage, 0f);
 		}else{
@@ -143,12 +146,12 @@ public class EnvironmentalModifier extends BaseModifier {
 			if(getEnvironmentTemperature(player) < TemperatureCapability.COOL_THRESHOLD) {
 				float grainLevel = stats.getNutrition().getNutrient(Nutrient.GRAIN);
 				float meatLevel = stats.getNutrition().getNutrient(Nutrient.PROTEIN);
-				return new EnvironmentalModifier("nutrients", 3f * grainLevel * meatLevel, 0f);
+				return new EnvironmentalModifier("nutrients", 4f * grainLevel * meatLevel, 0f);
 			}
 			if(getEnvironmentTemperature(player) > TemperatureCapability.HOT_THRESHOLD) {
 				float fruitLevel = stats.getNutrition().getNutrient(Nutrient.FRUIT);
 				float veggieLevel = stats.getNutrition().getNutrient(Nutrient.VEGETABLES);
-				return new EnvironmentalModifier("nutrients", -3f  * fruitLevel * veggieLevel, 0f);
+				return new EnvironmentalModifier("nutrients", -4f  * fruitLevel * veggieLevel, 0f);
 			}
 		}
 		return null;
@@ -167,12 +170,12 @@ public class EnvironmentalModifier extends BaseModifier {
 	}
 	
 	public static EnvironmentalModifier handleGeneralTemperature(EntityPlayer player) {
-		int hour = CalendarTFC.CALENDAR_TIME.getHourOfDay();
+		int dayTicks = (int) (player.world.getWorldTime() % 24000);
 		float dayPart = 0f;
-		if(hour < 6) dayPart = -4f;
-		else if(hour < 12) dayPart = 2f;
-		else if(hour < 18) dayPart = 4f;
-		else dayPart = -2f;
+		if(dayTicks < 6000) dayPart = 2f;
+		else if(dayTicks < 12000) dayPart = 4f;
+		else if(dayTicks < 18000) dayPart = 1f;
+		else dayPart = -4;
 		return new EnvironmentalModifier("environment", getEnvironmentTemperature(player) + dayPart, getEnvironmentHumidity(player));
 	}
 	

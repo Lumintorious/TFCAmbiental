@@ -20,6 +20,10 @@ public class TFCAmbientalConfig {
 		    @Config.Comment("General settings")
 		    @Config.LangKey("config." + TFCAmbiental.MODID + ".general")
 		    public static final GeneralCFG GENERAL = new GeneralCFG();
+		    
+		    @Config.Comment("Time extension settings")
+		    @Config.LangKey("config." + TFCAmbiental.MODID + ".time_extension")
+		    public static final TimeExtensionCFG TIME_EXTENSION = new TimeExtensionCFG();
 
 		    @SubscribeEvent
 		    public static void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
@@ -33,6 +37,24 @@ public class TFCAmbientalConfig {
 		            TemperatureCapability.BURN_THRESHOLD = TFCAmbientalConfig.GENERAL.burningTemperature;
 		            TemperatureCapability.FREEZE_THRESHOLD = TFCAmbientalConfig.GENERAL.freezingTemperature;
 		        }
+		    }
+		    
+		    public static class TimeExtensionCFG{
+//		    	@Config.Comment("By how many ticks should dawn time be extended?")
+//	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".time_extension.dawnTicks")
+//	         	public int dawnTicks = 0;
+//
+//		    	@Config.Comment("By how many ticks should noon time be extended?")
+//	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".time_extension.noonTicks")
+//	         	public int noonTicks = 0;
+//
+//		    	@Config.Comment("By how many ticks should dusk time be extended?")
+//	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".time_extension.duskTicks")
+//	         	public int duskTicks = 0;
+//
+//		    	@Config.Comment("By how many ticks should midnight time be extended?")
+//	         	@Config.LangKey("config." + TFCAmbiental.MODID + ".time_extension.midnightTicks")
+//	         	public int midnightTicks = 0;
 		    }
 
 		    public static class ClientCFG{

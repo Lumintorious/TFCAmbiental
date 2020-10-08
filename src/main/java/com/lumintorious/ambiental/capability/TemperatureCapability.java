@@ -14,6 +14,8 @@ import com.lumintorious.ambiental.modifiers.ModifierStorage;
 
 import net.dries007.tfc.TerraFirmaCraft;
 import net.dries007.tfc.api.capability.food.FoodStatsTFC;
+import net.minecraft.client.resources.FoliageColorReloadListener;
+import net.minecraft.client.resources.GrassColorReloadListener;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -74,11 +76,12 @@ public class TemperatureCapability<C> implements ICapabilitySerializable<NBTTagC
 
 	public static final float BAD_MULTIPLIER = 0.002f;
 	public static final float GOOD_MULTIPLIER = 0.002f;
-	public static final float CHANGE_CAP = 5f;
+	public static final float CHANGE_CAP = 7.5f;
 	public static final float HIGH_CHANGE = 0.20f;
 	
 	public float savedPotency = 1f;
 	public float getPotency() {
+		
 		return savedPotency;
 	}
 	
@@ -113,13 +116,13 @@ public class TemperatureCapability<C> implements ICapabilitySerializable<NBTTagC
 				return;
 			}else {
 				tick = 0;
-				if(damageTick > 20) {
+				if(damageTick > 40) {
 					damageTick = 0;
 					if(TFCAmbientalConfig.GENERAL.takeDamage) {
 						if(this.getTemperature() > BURN_THRESHOLD) {
-								player.attackEntityFrom(AmbientalDamage.HEAT,  2f);
+								player.attackEntityFrom(AmbientalDamage.HEAT,  4f);
 						}else if (this.getTemperature() < FREEZE_THRESHOLD){
-								player.attackEntityFrom(AmbientalDamage.COLD, 2f);
+								player.attackEntityFrom(AmbientalDamage.COLD, 4f);
 						}
 					}
 					if(TFCAmbientalConfig.GENERAL.loseHungerThirst) {

@@ -27,11 +27,11 @@ public class EquipmentModifier extends BaseModifier{
 						float envTemp = EnvironmentalModifier.getEnvironmentTemperature(player);
 						if(envTemp > TemperatureCapability.AVERAGE + 3) {
 							float diff = envTemp - TemperatureCapability.AVERAGE;
-							modifiers.add(new EquipmentModifier("helmet", - diff / 4, -0.4f));
+							modifiers.add(new EquipmentModifier("helmet", - diff / 3.5f, -0.5f));
 						}
 					}
 				}else {
-					modifiers.add(new EquipmentModifier("armor", 2f, -0.1f));
+					modifiers.add(new EquipmentModifier("armor", 3f, -0.25f));
 				}
 			}
 		}

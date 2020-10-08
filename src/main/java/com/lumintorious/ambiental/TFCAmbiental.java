@@ -2,6 +2,7 @@ package com.lumintorious.ambiental;
 
 import com.lumintorious.ambiental.capability.ITemperatureCapability;
 import com.lumintorious.ambiental.capability.TemperaturePacket;
+import com.lumintorious.ambiental.capability.TimeExtensionCapability;
 
 import net.dries007.tfc.TerraFirmaCraft;
 import net.dries007.tfc.api.capability.DumbStorage;
@@ -26,12 +27,13 @@ public class TFCAmbiental
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-    	MinecraftForge.EVENT_BUS.register(new PlayerTemperatureHandler());
+    	MinecraftForge.EVENT_BUS.register(new AmbientalHandler());
     	if (event.getSide() == Side.CLIENT)
         {
     		MinecraftForge.EVENT_BUS.register(new GuiRenderer());
         }
     	CapabilityManager.INSTANCE.register(ITemperatureCapability.class, new DumbStorage(), () -> null);
+//    	CapabilityManager.INSTANCE.register(TimeExtensionCapability.class, new DumbStorage(), () -> null);
     	
     	
     	TerraFirmaCraft.getNetwork().registerMessage(new TemperaturePacket.Handler(), TemperaturePacket.class, 0, Side.CLIENT);
