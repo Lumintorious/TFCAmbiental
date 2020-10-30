@@ -1,8 +1,5 @@
 package com.lumintorious.ambiental.capability;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.lumintorious.ambiental.AmbientalDamage;
 import com.lumintorious.ambiental.TFCAmbientalConfig;
 import com.lumintorious.ambiental.modifiers.BaseModifier;
@@ -14,8 +11,6 @@ import com.lumintorious.ambiental.modifiers.ModifierStorage;
 
 import net.dries007.tfc.TerraFirmaCraft;
 import net.dries007.tfc.api.capability.food.FoodStatsTFC;
-import net.minecraft.client.resources.FoliageColorReloadListener;
-import net.minecraft.client.resources.GrassColorReloadListener;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,7 +18,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 public class TemperatureCapability<C> implements ICapabilitySerializable<NBTTagCompound>, ITemperatureCapability
@@ -63,11 +57,10 @@ public class TemperatureCapability<C> implements ICapabilitySerializable<NBTTagC
 		EnvironmentalModifier.computeModifiers(player, modifiers);
 		BlockModifier.computeModifiers(player, modifiers);
 		EquipmentModifier.getModifiers(player, modifiers);
-		
-		
+
 		savedTarget = modifiers.getTargetTemperature();
 		savedPotency = modifiers.getTotalPotency();
-	}
+}
 	
 	public float savedTarget = AVERAGE;
 	public float getTargetTemperature() {

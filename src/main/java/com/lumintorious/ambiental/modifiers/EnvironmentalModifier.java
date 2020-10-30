@@ -5,10 +5,10 @@ import com.lumintorious.ambiental.api.IEnvironmentalTemperatureProvider;
 import com.lumintorious.ambiental.api.TemperatureRegistry;
 import com.lumintorious.ambiental.capability.TemperatureCapability;
 
+import com.lumintorious.ambiental.effects.TempEffect;
 import net.dries007.tfc.api.capability.food.IFoodStatsTFC;
 import net.dries007.tfc.api.capability.food.Nutrient;
 import net.dries007.tfc.objects.fluids.FluidsTFC;
-import net.dries007.tfc.util.calendar.CalendarTFC;
 import net.dries007.tfc.util.climate.ClimateData;
 import net.dries007.tfc.util.climate.ClimateTFC;
 import net.minecraft.block.state.IBlockState;
@@ -19,17 +19,12 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.biome.Biome;
 
 public class EnvironmentalModifier extends BaseModifier {
-
-	public EnvironmentalModifier(String name) {
-		super(name);
-	}
 	public EnvironmentalModifier(String name, float change, float potency) {
 		super(name, change, potency);
 	}
 	
 	public static float getEnvironmentTemperature(EntityPlayer player) {
 		float avg = ClimateData.DEFAULT.getRegionalTemp() + 2f;
-		float incr = 0f;
 		float actual = ClimateTFC.getActualTemp(player.world, player.getPosition());
 		if(TFCAmbientalConfig.GENERAL.harsherTemperateAreas) {
 			float diff = actual - TemperatureCapability.AVERAGE;
@@ -116,7 +111,7 @@ public class EnvironmentalModifier extends BaseModifier {
 		float temp = getEnvironmentTemperature(player);
 		float avg = TemperatureCapability.AVERAGE;
 		float coverage = (1f - (float)skyLight/15f) + 0.4f;
-		if(skyLight < 14 && blockLight > 4 && temp < avg - 2) {
+		if(skyLight < 14 && blockLight > 4 && temp < avg - 2 && player.getPosition().getY() > 130) {
 			return new EnvironmentalModifier("cozy", Math.abs(avg - 2 - temp) *  coverage, 0f);
 		}else{
 			return null;
@@ -171,12 +166,22 @@ public class EnvironmentalModifier extends BaseModifier {
 	
 	public static EnvironmentalModifier handleGeneralTemperature(EntityPlayer player) {
 		int dayTicks = (int) (player.world.getWorldTime() % 24000);
-		float dayPart = 0f;
+		float dayPart;
 		if(dayTicks < 6000) dayPart = 2f;
 		else if(dayTicks < 12000) dayPart = 4f;
 		else if(dayTicks < 18000) dayPart = 1f;
 		else dayPart = -4;
 		return new EnvironmentalModifier("environment", getEnvironmentTemperature(player) + dayPart, getEnvironmentHumidity(player));
+	}
+
+	public static EnvironmentalModifier handlePotionEffects(EntityPlayer player) {
+		if(player.isPotionActive(TempEffect.COOL)){
+			return new EnvironmentalModifier("cooling_effect", -10F, 0);
+		}
+		if(player.isPotionActive(TempEffect.WARM)){
+			return new EnvironmentalModifier("heating_effect", 10F, 0);
+		}
+		return null;
 	}
 	
 	public static void computeModifiers(EntityPlayer player, ModifierStorage modifiers){

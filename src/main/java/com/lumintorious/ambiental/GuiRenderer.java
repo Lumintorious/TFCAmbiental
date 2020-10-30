@@ -1,10 +1,7 @@
 package com.lumintorious.ambiental;
 
-import org.lwjgl.opengl.GL11;
-
 import com.lumintorious.ambiental.capability.ITemperatureCapability;
 import com.lumintorious.ambiental.capability.TemperatureCapability;
-
 import net.dries007.tfc.objects.fluids.FluidsTFC;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -23,6 +20,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiRenderer {

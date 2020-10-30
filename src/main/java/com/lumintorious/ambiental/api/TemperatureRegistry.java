@@ -61,7 +61,7 @@ public class TemperatureRegistry<Type extends ITemperatureProvider> implements I
 		ENVIRONMENT.register(EnvironmentalModifier::handleRain);
 		ENVIRONMENT.register(EnvironmentalModifier::handleSprinting);
 		ENVIRONMENT.register(EnvironmentalModifier::handleUnderground);
-		
+		ENVIRONMENT.register(EnvironmentalModifier::handlePotionEffects);
 	}
 	
 	private final ArrayList<Type> list = new ArrayList<>();

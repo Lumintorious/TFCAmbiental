@@ -1,75 +1,31 @@
 package com.lumintorious.ambiental;
 
-import java.awt.Color;
-import java.awt.event.ItemEvent;
-import java.lang.reflect.Field;
-
 import com.lumintorious.ambiental.capability.TemperatureCapability;
-import com.lumintorious.ambiental.capability.TimeExtensionCapability;
-
+import com.lumintorious.ambiental.effects.TempEffect;
 import net.dries007.tfc.api.capability.food.CapabilityFood;
 import net.dries007.tfc.api.capability.food.IFood;
-import net.dries007.tfc.objects.blocks.BlocksTFC;
-import net.dries007.tfc.objects.blocks.plants.BlockPlantTFC;
-import net.dries007.tfc.objects.blocks.stone.BlockFarmlandTFC;
-import net.dries007.tfc.objects.blocks.stone.BlockRockVariant;
-import net.dries007.tfc.objects.items.food.ItemFoodTFC;
-import net.dries007.tfc.util.calendar.CalendarTFC;
-import net.dries007.tfc.util.climate.ClimateTFC;
-import net.minecraft.advancements.critereon.VillagerTradeTrigger;
-import net.minecraft.block.Block;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.InventoryMerchant;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
-import net.minecraft.world.ColorizerGrass;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldSavedData;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.GameRuleChangeEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
-import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
-import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
-import net.minecraftforge.event.terraingen.BiomeEvent.GetGrassColor;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
-import net.minecraftforge.fml.common.registry.VillagerRegistry;
-import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.lang.reflect.Field;
 
 public class AmbientalHandler {
-
-//	@SubscribeEvent
-//	public void onSleep(PlayerWakeUpEvent event) {
-//		TimeExtensionCapability.onSleep(event);
-//	}
-//	
-//	@SubscribeEvent
-//	public void onGameRuleChange(GameRuleChangeEvent event) {
-//		TimeExtensionCapability.onGameRuleChange(event);
-//	}
 	
 	// Ignore this code!
 	@SubscribeEvent
@@ -107,12 +63,7 @@ public class AmbientalHandler {
 			}
 		}
 	}
-	
-//	@SubscribeEvent
-//	public void onWorldTick(WorldTickEvent event) {
-//		TimeExtensionCapability.onWorldTick(event);
-//	}
-	
+
 	@SubscribeEvent
 	public void onPlayerDeath(LivingDeathEvent event) {
 		if(event.getEntityLiving().world.isRemote) {
@@ -185,5 +136,12 @@ public class AmbientalHandler {
 			}
 		}
 		temp.update();
+	}
+
+	@SubscribeEvent
+	public void registerPotions(RegistryEvent.Register<Potion> event)
+	{
+		event.getRegistry().register(TempEffect.WARM);
+		event.getRegistry().register(TempEffect.COOL);
 	}
 }
